@@ -61,12 +61,13 @@ function compile() {
         finerr
         exit 1
     fi
-    cp out/arch/arm64/boot/Image.gz-dtb AnyKernel
 }
 # Zipping
 function zipping() {
     cd AnyKernel || exit 1
-    zip -r9 aLn-Come_Back-lavender-${TANGGAL}.zip *
+    make clean
+    cp ../out/arch/arm64/boot/Image.gz-dtb .
+    make ZIP=aLn-Come_Back-lavender-${TANGGAL}.zip
     cd ..
 }
 # sticker
