@@ -69,7 +69,7 @@ function zipping() {
     zip -r9 aLn-Come_Back-lavender-${TANGGAL}.zip *
     cd ..
 }
-sticker
+# sticker
 sendinfo
 compile
 zipping
