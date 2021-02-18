@@ -4218,6 +4218,48 @@ bool ipa3_get_client_uplink(int pipe_idx)
 	return ipa3_ctx->ipacm_client[pipe_idx].uplink;
 }
 
+/**
+ * ipa3_get_rm_resource_from_ep() - get the IPA_RM resource which is related to
+ * the supplied pipe index.
+ *
+ * @pipe_idx:
+ *
+ * Return value: IPA_RM resource related to the pipe, -1 if a resource was not
+ * found.
+ */
+enum ipa_rm_resource_name ipa3_get_rm_resource_from_ep(int pipe_idx)
+{
+	int i;
+	int j;
+	enum ipa_client_type client;
+	struct ipa3_client_names clients;
+	bool found = false;
+
+	if (pipe_idx >= ipa3_ctx->ipa_num_pipes || pipe_idx < 0) {
+		IPAERR("Bad pipe index!\n");
+		return -EINVAL;
+	}
+
+	client = ipa3_ctx->ep[pipe_idx].client;
+
+	for (i = 0; i < IPA_RM_RESOURCE_MAX; i++) {
+		memset(&clients, 0, sizeof(clients));
+		ipa3_get_clients_from_rm_resource(i, &clients);
+		for (j = 0; j < clients.length; j++) {
+			if (clients.names[j] == client) {
+				found = true;
+				break;
+			}
+		}
+		if (found)
+			break;
+	}
+
+	if (!found)
+		return -EFAULT;
+
+	return i;
+}
 
 /**
  * ipa3_get_client_mapping() - provide client mapping
@@ -5294,8 +5336,8 @@ int ipa3_cfg_ep_holb(u32 clnt_hdl, const struct ipa_ep_cfg_holb *ep_holb)
 	ipa3_ctx->ep[clnt_hdl].holb.en = IPA_HOLB_TMR_EN;
 	ipahal_write_reg_n_fields(IPA_ENDP_INIT_HOL_BLOCK_EN_n,
 		clnt_hdl, ep_holb);
-	/* For targets > IPA_4.0 issue requires HOLB_EN to be written twice */
-	if (ipa3_ctx->ipa_hw_type >= IPA_HW_v4_0)
+	/* IPA4.5 issue requires HOLB_EN to be written twice */
+	if (ipa3_ctx->ipa_hw_type >= IPA_HW_v4_5)
 		ipahal_write_reg_n_fields(IPA_ENDP_INIT_HOL_BLOCK_EN_n,
 			clnt_hdl, ep_holb);
 
@@ -6877,13 +6919,9 @@ int ipa3_is_vlan_mode(enum ipa_vlan_ifaces iface, bool *res)
 	return 0;
 }
 
-/*
- * ipa3_pm_is_used - check if PM support is present or not
- * For IPAv3, PM is supported always
- */
 static bool ipa3_pm_is_used(void)
 {
-	return true;
+	return (ipa3_ctx) ? ipa3_ctx->use_ipa_pm : false;
 }
 
 int ipa3_bind_api_controller(enum ipa_hw_type ipa_hw_type,
@@ -7039,6 +7077,7 @@ int ipa3_bind_api_controller(enum ipa_hw_type ipa_hw_type,
 	api_ctrl->ipa_proxy_clk_unvote = ipa3_proxy_clk_unvote;
 	api_ctrl->ipa_is_client_handle_valid = ipa3_is_client_handle_valid;
 	api_ctrl->ipa_get_client_mapping = ipa3_get_client_mapping;
+	api_ctrl->ipa_get_rm_resource_from_ep = ipa3_get_rm_resource_from_ep;
 	api_ctrl->ipa_get_modem_cfg_emb_pipe_flt =
 		ipa3_get_modem_cfg_emb_pipe_flt;
 	api_ctrl->ipa_get_transport_type = ipa3_get_transport_type;
@@ -7080,6 +7119,7 @@ int ipa3_bind_api_controller(enum ipa_hw_type ipa_hw_type,
 	api_ctrl->ipa_tz_unlock_reg = ipa3_tz_unlock_reg;
 	api_ctrl->ipa_get_smmu_params = ipa3_get_smmu_params;
 	api_ctrl->ipa_is_vlan_mode = ipa3_is_vlan_mode;
+	api_ctrl->ipa_pm_is_used = ipa3_pm_is_used;
 	api_ctrl->ipa_wigig_internal_init = ipa3_wigig_internal_init;
 	api_ctrl->ipa_conn_wigig_rx_pipe_i = ipa3_conn_wigig_rx_pipe_i;
 	api_ctrl->ipa_conn_wigig_client_i = ipa3_conn_wigig_client_i;
@@ -7100,7 +7140,6 @@ int ipa3_bind_api_controller(enum ipa_hw_type ipa_hw_type,
 	api_ctrl->ipa_get_prot_id =
 		ipa3_get_prot_id;
 	api_ctrl->ipa_get_lan_rx_napi = ipa3_get_lan_rx_napi;
-	api_ctrl->ipa_pm_is_used = ipa3_pm_is_used;
 	return 0;
 }
 
@@ -7606,9 +7645,13 @@ static bool ipa3_gsi_channel_is_quite(struct ipa3_ep_context *ep)
 	bool empty;
 
 	gsi_is_channel_empty(ep->gsi_chan_hdl, &empty);
-	if (!empty)
+	if (!empty) {
 		IPADBG("ch %ld not empty\n", ep->gsi_chan_hdl);
-	/*Schedule NAPI only from interrupt context to avoid race conditions*/
+		/* queue a work to start polling if don't have one */
+		atomic_set(&ipa3_ctx->transport_pm.eot_activity, 1);
+		if (!atomic_read(&ep->sys->curr_polling_state))
+			__ipa_gsi_irq_rx_scedule_poll(ep->sys);
+	}
 	return empty;
 }
 
