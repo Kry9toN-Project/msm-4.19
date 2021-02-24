@@ -15,7 +15,7 @@ steps:
     DEVICE: lavender
     RELEASE: false
     CODENAME: Come_Back
-    TYPE: BLC
+    TYPE: PWR
     CHANGELOG: |
       NOTES!!! aLn is Come Back....
     WEB_VERSIONS: Come_Back
