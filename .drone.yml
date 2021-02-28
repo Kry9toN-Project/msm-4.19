@@ -13,7 +13,7 @@ steps:
     SF_PASS:
       from_secret: sf_pass
     DEVICE: lavender
-    RELEASE: true
+    RELEASE: false
     CODENAME: ComeBack-v2.0
     TYPE: BLC
     CHANGELOG: |
