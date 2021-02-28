@@ -49,7 +49,7 @@
 			reg = <0x0 0x0>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			efficiency = <1024>;
 			next-level-cache = <&L2_0>;
@@ -82,7 +82,7 @@
 			reg = <0x0 0x1>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			#cooling-cells = <2>;
 			efficiency = <1024>;
@@ -106,7 +106,7 @@
 			reg = <0x0 0x2>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			efficiency = <1024>;
 			next-level-cache = <&L2_0>;
@@ -130,7 +130,7 @@
 			reg = <0x0 0x3>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			efficiency = <1024>;
 			next-level-cache = <&L2_0>;
@@ -154,7 +154,7 @@
 			reg = <0x0 0x100>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1638>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_1>;
 			qcom,lmh-dcvs = <&lmh_dcvs1>;
 			efficiency = <1638>;
 			next-level-cache = <&L2_1>;
@@ -182,7 +182,7 @@
 			reg = <0x0 0x101>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1638>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_1>;
 			qcom,lmh-dcvs = <&lmh_dcvs1>;
 			#cooling-cells = <2>;
 			efficiency = <1638>;
@@ -206,7 +206,7 @@
 			reg = <0x0 0x102>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1638>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_1>;
 			qcom,lmh-dcvs = <&lmh_dcvs1>;
 			#cooling-cells = <2>;
 			efficiency = <1638>;
@@ -230,7 +230,7 @@
 			reg = <0x0 0x103>;
 			enable-method = "psci";
 			capacity-dmips-mhz = <1638>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_1>;
 			qcom,lmh-dcvs = <&lmh_dcvs1>;
 			#cooling-cells = <2>;
 			efficiency = <1638>;
@@ -300,9 +300,6 @@
 				1747200 5105
 				1843200 5959
 			>;
-			idle-cost-data = <
-				4 4 0 0
-			>;
 		};
 
 		CPU_COST_1: core-cost1 {
@@ -315,40 +312,8 @@
 				2150400 27509
 				2208000 30369
 			>;
-			idle-cost-data = <
-				6 6 0 0
-			>;
 		};
 
-		CLUSTER_COST_0: cluster-cost0 {
-			busy-cost-data = <
-				633600 22
-				902400 27
-				1113600 32
-				1401600 40
-				1536000 45
-				1747200 55
-				1843200 61
-			>;
-			idle-cost-data = <
-				41 41 41 0
-			>;
-		};
-
-		CLUSTER_COST_1: cluster-cost1 {
-			busy-cost-data = <
-				1113600 54
-				1401600 74
-				1747200 116
-				1804800 125
-				1958400 157
-				2150400 209
-				2208000 229
-			>;
-			idle-cost-data = <
-				50 50 50 0
-			>;
-		};
 	};
 
 	clocks {
