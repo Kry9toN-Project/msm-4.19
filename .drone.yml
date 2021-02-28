@@ -13,12 +13,12 @@ steps:
     SF_PASS:
       from_secret: sf_pass
     DEVICE: lavender
-    RELEASE: false
-    CODENAME: Come_Back
+    RELEASE: true
+    CODENAME: ComeBack-v2.0
     TYPE: BLC
     CHANGELOG: |
-      NOTES!!! aLn is Come Back....
-    WEB_VERSIONS: Come_Back
+      • Merge tag 'ASB-2021-02-05_4.19-q'<br>• msm: ipa: use from 4.19.113<br>Fixed Ram Management issue<br>• Fixed Volume incall issie<br>• Add KCAL<br>• Add Wireguard<br>• Add energy costs from 4.14<br>• Update Energy Model Costs<br>• Built use Sdclang 10<br>• And other improvement<br>NOTES!!!<br>This kernel 4.19, only flash on ROM with 4.19
+    WEB_VERSIONS: v2.0
   commands:
   - git clone https://github.com/Kry9toN-Project/Drone-CI
   - mv Drone-CI/* .
