@@ -14,7 +14,7 @@ steps:
       from_secret: sf_pass
     DEVICE: lavender
     RELEASE: false
-    CODENAME: Come_Back
+    CODENAME: CAF
     TYPE: BLC
     CHANGELOG: |
       NOTES!!! aLn is Come Back....
