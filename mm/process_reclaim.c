@@ -242,12 +242,11 @@ static void sort_and_kill_tasks(struct selected_task selected[], int si)
 		}
 		task_unlock(tsk);
 
-		pr_debug("process_reclaim: total:%d[%d] comm:%s(%d) txpd:%llu KILLED!",
+		pr_debug("process_reclaim: total:%d[%d] comm:%s(%d) KILLED!",
 				max,
 				(si + 1),
 				tsk->comm,
-				tsk->signal->oom_score_adj,
-				cputime_to_nsecs(tsk->acct_timexpd));
+				tsk->signal->oom_score_adj);
 
 		msleep(20);
 		if (tsk)
