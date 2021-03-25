@@ -1,0 +1,25 @@
+kind: pipeline
+type: docker
+name: build
+
+steps:
+- name: cooked
+  image: alanndz/docker:sdclang
+  environment:
+    token:
+      from_secret: bot_api
+    github_cert:
+      from_secret: github_cert
+    SF_PASS:
+      from_secret: sf_pass
+    DEVICE: lavender
+    RELEASE: false
+    CODENAME: OtherBase
+    TYPE: BLC
+    CHANGELOG: |
+      NOTES!!! aLn is Come Back....
+    WEB_VERSIONS: Come_Back
+  commands:
+  - git clone https://github.com/Kry9toN-Project/Drone-CI
+  - mv Drone-CI/* .
+  - bash main.sh
