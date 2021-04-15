@@ -138,3 +138,6 @@ kernel/configs/android-*.cfg
 
 # sh file
 *.sh
+
+# out
+out
