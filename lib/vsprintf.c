@@ -367,6 +367,27 @@ int num_to_str(char *buf, int size, unsigned long long num, unsigned int width)
 	return len + width;
 }
 
+int __num_to_str(char *buf, int size, unsigned long long num)
+{
+	/* put_dec requires 2-byte alignment of the buffer. */
+	char tmp[sizeof(num) * 3] __aligned(2);
+	int idx, len;
+
+	/* put_dec() may work incorrectly for num = 0 (generate "", not "0") */
+	if (num <= 9) {
+		tmp[0] = '0' + num;
+		len = 1;
+	} else {
+		len = put_dec(tmp, num) - tmp;
+	}
+
+	if (len > size)
+		return 0;
+	for (idx = 0; idx < len; ++idx)
+		buf[idx] = tmp[len - idx - 1];
+	return len;
+}
+
 #define SIGN	1		/* unsigned/signed, must be 1 */
 #define LEFT	2		/* left justified */
 #define PLUS	4		/* show plus */

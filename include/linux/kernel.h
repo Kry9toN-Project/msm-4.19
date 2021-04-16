@@ -449,6 +449,7 @@ extern long long simple_strtoll(const char *,char **,unsigned int);
 
 extern int num_to_str(char *buf, int size,
 		      unsigned long long num, unsigned int width);
+extern int __num_to_str(char *buf, int size, unsigned long long num);
 
 /* lib/printf utilities */
 
